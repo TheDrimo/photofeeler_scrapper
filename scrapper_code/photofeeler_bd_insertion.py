@@ -41,6 +41,7 @@ class database_photofeeler:
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS Photos (
             photo_id TEXT PRIMARY KEY,
+            photo_url TEXT,
             categorie TEXT,
             votes TEXT,
             quality TEXT,
@@ -82,11 +83,12 @@ class database_photofeeler:
         
         # Insérer les données générales dans Photos
         cursor.execute('''
-        INSERT INTO Photos (photo_id,categorie,  votes, quality, voters_type, subject_info)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO Photos (photo_id, photo_url, categorie,  votes, quality, voters_type, subject_info)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(photo_id) DO UPDATE SET
         votes=excluded.votes, quality=excluded.quality
         ''', (photo_id, 
+              general_data['photo_url'],
               general_data['categorie'], 
               general_data['votes'], 
               general_data['quality'], 
@@ -117,7 +119,7 @@ class database_photofeeler:
         self.conn.close()
 
     def split_results_data(self, results):
-        general_keys = ['categorie', 'votes', 'quality', 'voters_type', 'subject_info']
+        general_keys = ['photo_url', 'categorie', 'votes', 'quality', 'voters_type', 'subject_info']
         score_keys = results['scores_data'].keys()
 
         general_data = {key: results[key] for key in general_keys}
@@ -128,7 +130,8 @@ class database_photofeeler:
 
 
 lien_photo = "https://www.photofeeler.com/my-tests#view/tsnuo17esy2o926v"
-results = {'categorie': 'DATING',
+results = {'photo_url': 'https://d2oezb05uoa2c1.cloudfront.net/p/prwy4jao12k3slkl.jpg',
+           'categorie': 'DATING',
            'votes': '10', 
            'quality': 'ROUGH', 
            'voters_type': 'ALL', 
@@ -140,7 +143,7 @@ data = {'Smart': {'NO': '1', 'SOMEWHAT': '5', 'YES': '4', 'VERY': '0'},
 
 
 if __name__ == "__main__":
-    db = database_photofeeler('dynamic_photofeeler.db')
+    db = database_photofeeler('../photofeeler_data/dynamic_photofeeler.db')
     db.data_harvesting()
     db.close()
 

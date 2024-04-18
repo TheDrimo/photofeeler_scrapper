@@ -65,7 +65,7 @@ class PhotoFeelerScraper:
     def scrape_photo_page_result(self, url):
 	    #print(f"Navigation vers {url}...")
 	    self.driver.get(url+ "/results")
-	    time.sleep(1)
+	    time.sleep(0.5)
 	    #print("Récupération des données de la page photo...")
 
 	    # Extraction du nombre de votes
@@ -79,6 +79,10 @@ class PhotoFeelerScraper:
 		# Extraction de la catégorie de l'échantillon
 	    category_element = self.driver.find_element(By.CSS_SELECTOR, ".category-bar")
 	    category_type = category_element.text.strip()  # Enlève les espaces superflus
+
+	    # Extraction de la photo
+	    image_element = self.driver.find_element(By.CSS_SELECTOR, ".photo-container img")
+	    image_url = image_element.get_attribute('src')
 
 	    # les photos business et social n'ont pas de contexte sur les voters ou le sujet
 	    try:	
@@ -105,6 +109,7 @@ class PhotoFeelerScraper:
 
 		# Retourner les données extraites
 	    return {
+	    	'photo_url': image_url,
 	    	'categorie': category_type,
 			'votes': votes,
 			'quality': quality,
@@ -118,7 +123,7 @@ class PhotoFeelerScraper:
 	    new_url = url + "/data"
 	    #print(f"Navigation vers {new_url}...")
 	    self.driver.get(new_url)
-	    time.sleep(1)
+	    time.sleep(0.5)
 
 	    #print("Récupération des données des boîtes de score...")
     
