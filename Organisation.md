@@ -37,7 +37,8 @@ créer un objet feelerconnect à travers lequel on naviguera sur le site et sur 
             - sw
             - yes
             - very
-- [ ] stocker les données de la meilleurs manière, base de données ou json (json semble plus adapté). Ce sera une bd avec une table par catégorie (dating, business et social)
+- [x] stocker les données de la meilleurs manière, base de données ou json (json semble plus adapté). Ce sera une bd avec une table par catégorie (dating, business et social)
+- [ ] récupérer l'image, ce sera ensuite plus facile pour la caractériser, pas nécessaire de l'avoir en haute résolution
 
 ### étape 3 : catégoriser les photos (luminosité, qualité ...)
 ### étape 4 : analyser les photos, établir des corrélation avec les notes
@@ -45,10 +46,10 @@ créer un objet feelerconnect à travers lequel on naviguera sur le site et sur 
 ## ce qui a à faire pour la prochaine fois
 le scrapper fonctionne et avec une boucle sur toutes les photos il récupère toutes les données.
 Il faut donc :
-- [ ] faire la boucle sur chaque photo
-- [ ] récupérer les données de la photo
-- [ ] stocker les données dans la bd correspondante à la catégorie (ou la créer s'il elle n'existe pas)
-- [ ] tout est prêt pour l'analyse
+- [x] faire la boucle sur chaque photo
+- [x] récupérer les données de la photo
+- [x] stocker les données dans la bd correspondante à la catégorie (ou la créer s'il elle n'existe pas)
+- [x] tout est prêt pour l'analyse
 
 #### bonus
 - [ ] utiliser les décorateurs pour calculer le temps moyen de chaque fonction

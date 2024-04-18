@@ -63,9 +63,10 @@ class PhotoFeelerScraper:
         return [link.get_attribute('href') for link in links]
 
     def scrape_photo_page_result(self, url):
-	    print(f"Navigation vers {url}...")
-	    self.driver.get(url)
-	    print("Récupération des données de la page photo...")
+	    #print(f"Navigation vers {url}...")
+	    self.driver.get(url+ "/results")
+	    time.sleep(1)
+	    #print("Récupération des données de la page photo...")
 
 	    # Extraction du nombre de votes
 	    votes_element = self.driver.find_element(By.CSS_SELECTOR, ".test-info-box.vote-count .info-box-value")
@@ -75,15 +76,22 @@ class PhotoFeelerScraper:
 	    quality_element = self.driver.find_element(By.CSS_SELECTOR, ".test-info-box.sample-size-description .quality-value-label")
 	    quality = quality_element.text.strip()
 
-	    # Extraction du type de voters
-	    voters_type_element = self.driver.find_element(By.XPATH, "//div[span[@class='demo-label' and contains(text(), 'VOTERS -')]]/span[2]")
-	    voters_type = voters_type_element.text.strip()
+		# Extraction de la catégorie de l'échantillon
+	    category_element = self.driver.find_element(By.CSS_SELECTOR, ".category-bar")
+	    category_type = category_element.text.strip()  # Enlève les espaces superflus
 
-	    # Extraction des infos sur le sujet
-	    subject_info_element = self.driver.find_element(By.XPATH, "//div[span[@class='demo-label' and contains(text(), 'SUBJECT -')]]")
-	    subject_info = subject_info_element.text.replace("SUBJECT -", "").strip()  # Supprime le label et nettoie la chaîne
+	    # les photos business et social n'ont pas de contexte sur les voters ou le sujet
+	    try:	
+		    # Extraction du context (type de voters et infos sur le sujet)
+		    context_element = self.driver.find_element(By.CSS_SELECTOR, ".context-demo-box")
+		    context_element = context_element.text.strip().split()
+		    voters_type = context_element[-1]
+		    subject_info = " ".join(context_element[2:5])
+	    except:
+		    voters_type = "none"
+		    subject_info = "none"
 
-	    print("Récupération des données des boîtes de score...")
+	    #print("Récupération des données des boîtes de score...")
 		# Sélectionner toutes les boîtes de score
 	    score_boxes = self.driver.find_elements(By.CSS_SELECTOR, ".score-boxes .score-box")
 	    scores_data = {}
@@ -97,6 +105,7 @@ class PhotoFeelerScraper:
 
 		# Retourner les données extraites
 	    return {
+	    	'categorie': category_type,
 			'votes': votes,
 			'quality': quality,
 			'voters_type': voters_type,
@@ -107,10 +116,11 @@ class PhotoFeelerScraper:
     def scrape_photo_page_data(self, url):
 	    #new_url = url.replace('/results', '/data')
 	    new_url = url + "/data"
-	    print(f"Navigation vers {new_url}...")
+	    #print(f"Navigation vers {new_url}...")
 	    self.driver.get(new_url)
+	    time.sleep(1)
 
-	    print("Récupération des données des boîtes de score...")
+	    #print("Récupération des données des boîtes de score...")
     
 	    # Sélectionner toutes les boîtes de score
 	    score_boxes = self.driver.find_elements(By.CSS_SELECTOR, ".score-box")
@@ -141,7 +151,7 @@ class PhotoFeelerScraper:
         page_html = self.driver.page_source
         with open(file_path, 'w', encoding='utf-8') as file:
             file.write(page_html)
-        print(f"HTML saved to {file_path}")
+        #print(f"HTML saved to {file_path}")
 
     def close(self):
         self.driver.quit()
@@ -157,6 +167,7 @@ if __name__ == "__main__":
 	photo_data_result = scraper.scrape_photo_page_result(links[0])
 	photo_data_data = scraper.scrape_photo_page_data(links[0])
 
-	print(photo_data_result)
-	print(photo_data_data)
+	print("lien :", links[0])
+	print("result", photo_data_result)
+	print("data", photo_data_data)
 	scraper.close()
